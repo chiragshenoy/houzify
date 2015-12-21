@@ -11,11 +11,24 @@
     <Button
         android:id="@+id/sort"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" />
+
+    <Button
+        android:id="@+id/generate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
 
     <lecho.lib.hellocharts.view.ColumnChartView
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></lecho.lib.hellocharts.view.ColumnChartView>
 
+    <EditText
+        android:id="@+id/numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number" />
 </FrameLayout>

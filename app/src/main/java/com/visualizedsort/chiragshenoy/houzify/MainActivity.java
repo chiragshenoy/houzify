@@ -1,5 +1,6 @@
 package com.visualizedsort.chiragshenoy.houzify;
 
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -14,10 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
@@ -30,7 +35,7 @@ import lecho.lib.hellocharts.view.Chart;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A fragment containing a column chart.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements SortObserver {
 
         private static final int DEFAULT_DATA = 0;
         private static final int SUBCOLUMNS_DATA = 1;
@@ -61,6 +66,12 @@ public class MainActivity extends ActionBarActivity {
         private int dataType = DEFAULT_DATA;
         int[] randomArray;
         private Button sort;
+        List<SubcolumnValue> values;
+        int[] sortedArray;
+        Button generate;
+        EditText numbers;
+        int numbersToBeGenerated = 0;
+
 
         public PlaceholderFragment() {
         }
@@ -72,25 +83,93 @@ public class MainActivity extends ActionBarActivity {
 
 
             sort = (Button) rootView.findViewById(R.id.sort);
+            generate = (Button) rootView.findViewById(R.id.generate);
+            numbers = (EditText) rootView.findViewById(R.id.numbers);
+
+            generate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        numbersToBeGenerated = Integer.parseInt(numbers.getText().toString());
+                        NumberList n = new NumberList(numbersToBeGenerated);
+                        randomArray = n.getAnArray();
+                        generateData();
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
+
 
             chart = (ColumnChartView) rootView.findViewById(R.id.chart);
             chart.setOnValueTouchListener(new ValueTouchListener());
 
-            NumberList n = new NumberList(100);
-
-            randomArray = n.getAnArray();
 
             sort.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    prepareDataAnimation();
+                    Sorter h = new HeapSorter(getContext(), randomArray);
+
+                    sortedArray = h.getSortedArray();
+
+                    //lol
+                    int numSubcolumns = randomArray.length;
+                    int numColumns = 1;
+                    // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
+                    List<Column> columns = new ArrayList<Column>();
+                    for (int i = 0; i < numColumns; ++i) {
+
+                        values = new ArrayList<SubcolumnValue>();
+                        for (int j = 0; j < numSubcolumns; ++j) {
+                            values.add(new SubcolumnValue(sortedArray[j], ChartUtils.pickColor()));
+                            Log.e("", "" + randomArray[j]);
+                        }
+
+                        Column column = new Column(values);
+                        column.setHasLabels(hasLabels);
+                        column.setHasLabelsOnlyForSelected(hasLabelForSelected);
+                        columns.add(column);
+                    }
+
+                    data = new ColumnChartData(columns);
+
+                    if (hasAxes) {
+                        Axis axisX = new Axis();
+                        Axis axisY = new Axis().setHasLines(true);
+                        if (hasAxesNames) {
+                            axisX.setName("Axis X");
+                            axisY.setName("Axis Y");
+                        }
+                        data.setAxisXBottom(axisX);
+                        data.setAxisYLeft(axisY);
+                    } else {
+                        data.setAxisXBottom(null);
+                        data.setAxisYLeft(null);
+                    }
+
+                    //lol ends
+                    chart.setColumnChartData(data);
+
                     chart.startDataAnimation();
+
                 }
             });
 
-            generateData();
+
+//            swap();
+
 
             return rootView;
+        }
+
+        private void swap() {
+
+            Collections.swap(values, 10, 20);
+            List<Column> columns = new ArrayList<Column>();
+            Column column = new Column(values);
+            columns.add(column);
+            data = new ColumnChartData(columns);
+            chart.setColumnChartData(data);
         }
 
         // MENU
@@ -109,7 +188,6 @@ public class MainActivity extends ActionBarActivity {
             int numColumns = 1;
             // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
             List<Column> columns = new ArrayList<Column>();
-            List<SubcolumnValue> values;
             for (int i = 0; i < numColumns; ++i) {
 
                 values = new ArrayList<SubcolumnValue>();
@@ -354,38 +432,14 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        private void toggleLabels() {
-            hasLabels = !hasLabels;
+        @Override
+        public void onArrayUpdate() {
 
-            if (hasLabels) {
-                hasLabelForSelected = false;
-                chart.setValueSelectionEnabled(hasLabelForSelected);
-            }
-
-            generateData();
         }
 
-        private void toggleLabelForSelected() {
-            hasLabelForSelected = !hasLabelForSelected;
-            chart.setValueSelectionEnabled(hasLabelForSelected);
+        @Override
+        public void update(Observable observable, Object data) {
 
-            if (hasLabelForSelected) {
-                hasLabels = false;
-            }
-
-            generateData();
-        }
-
-        private void toggleAxes() {
-            hasAxes = !hasAxes;
-
-            generateData();
-        }
-
-        private void toggleAxesNames() {
-            hasAxesNames = !hasAxesNames;
-
-            generateData();
         }
 
 
