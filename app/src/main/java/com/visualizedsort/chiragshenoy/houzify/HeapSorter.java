@@ -14,6 +14,26 @@ public class HeapSorter implements Sorter {
     public Context context;
     int[] arr;
 
+    private ArrayList<SortObserver> observers = new ArrayList<SortObserver>();
+    private Position ballPosition = new Position();
+
+    public void registerObserver(SortObserver observer) {
+        observers.add(observer);
+    }
+
+    public void notifyListeners() {
+        for (SortObserver observer : observers) {
+            observer.funcX(ballPosition);
+        }
+    }
+
+    public Position doSomethingWithSortPosition() {
+        //bounce etc
+        notifyListeners();
+        return ballPosition;
+    }
+
+
     public HeapSorter(Context context, int[] arr) {
         this.context = context;
         this.arr = arr;
@@ -55,6 +75,8 @@ public class HeapSorter implements Sorter {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+        int[] temp = {i, j};
+        ballPosition.setPos(temp);
     }
 
     public int[] getSortedArray() {

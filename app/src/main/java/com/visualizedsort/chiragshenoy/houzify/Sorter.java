@@ -6,4 +6,8 @@ package com.visualizedsort.chiragshenoy.houzify;
 public interface Sorter {
 
     int[] getSortedArray();
+
+    public void registerObserver(SortObserver observer);
+
+    public Position doSomethingWithSortPosition();
 }

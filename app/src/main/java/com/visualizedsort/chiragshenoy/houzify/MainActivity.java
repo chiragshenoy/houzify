@@ -110,44 +110,57 @@ public class MainActivity extends FragmentActivity {
                 public void onClick(View v) {
                     Sorter h = new HeapSorter(getContext(), randomArray);
 
+
+                    SortObserver s = new PlaceholderFragment();
+                    h.registerObserver(s);
+
                     sortedArray = h.getSortedArray();
+                    Position p = h.doSomethingWithSortPosition();
 
-                    //lol
-                    int numSubcolumns = randomArray.length;
-                    int numColumns = 1;
-                    // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
+                    int[] ans = p.getPos();
+                    Collections.swap(values, ans[0], ans[1]);
                     List<Column> columns = new ArrayList<Column>();
-                    for (int i = 0; i < numColumns; ++i) {
-
-                        values = new ArrayList<SubcolumnValue>();
-                        for (int j = 0; j < numSubcolumns; ++j) {
-                            values.add(new SubcolumnValue(sortedArray[j], ChartUtils.pickColor()));
-                            Log.e("", "" + randomArray[j]);
-                        }
-
-                        Column column = new Column(values);
-                        column.setHasLabels(hasLabels);
-                        column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-                        columns.add(column);
-                    }
-
+                    Column column = new Column(values);
+                    columns.add(column);
                     data = new ColumnChartData(columns);
+                    chart.setColumnChartData(data);
 
-                    if (hasAxes) {
-                        Axis axisX = new Axis();
-                        Axis axisY = new Axis().setHasLines(true);
-                        if (hasAxesNames) {
-                            axisX.setName("Axis X");
-                            axisY.setName("Axis Y");
-                        }
-                        data.setAxisXBottom(axisX);
-                        data.setAxisYLeft(axisY);
-                    } else {
-                        data.setAxisXBottom(null);
-                        data.setAxisYLeft(null);
-                    }
-
-                    //lol ends
+//                    //lol
+//                    int numSubcolumns = randomArray.length;
+//                    int numColumns = 1;
+//                    // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
+//                    List<Column> columns = new ArrayList<Column>();
+//                    for (int i = 0; i < numColumns; ++i) {
+//
+//                        values = new ArrayList<SubcolumnValue>();
+//                        for (int j = 0; j < numSubcolumns; ++j) {
+//                            values.add(new SubcolumnValue(sortedArray[j], ChartUtils.pickColor()));
+//                            Log.e("", "" + randomArray[j]);
+//                        }
+//
+//                        Column column = new Column(values);
+//                        column.setHasLabels(hasLabels);
+//                        column.setHasLabelsOnlyForSelected(hasLabelForSelected);
+//                        columns.add(column);
+//                    }
+//
+//                    data = new ColumnChartData(columns);
+//
+//                    if (hasAxes) {
+//                        Axis axisX = new Axis();
+//                        Axis axisY = new Axis().setHasLines(true);
+//                        if (hasAxesNames) {
+//                            axisX.setName("Axis X");
+//                            axisY.setName("Axis Y");
+//                        }
+//                        data.setAxisXBottom(axisX);
+//                        data.setAxisYLeft(axisY);
+//                    } else {
+//                        data.setAxisXBottom(null);
+//                        data.setAxisYLeft(null);
+//                    }
+//
+//                    //lol ends
                     chart.setColumnChartData(data);
 
                     chart.startDataAnimation();
@@ -432,8 +445,9 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
+
         @Override
-        public void onArrayUpdate() {
+        public void funcX(Position p) {
 
         }
 

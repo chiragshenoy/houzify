@@ -7,5 +7,5 @@ import java.util.Observer;
  */
 public interface SortObserver extends Observer {
 
-    void onArrayUpdate();
+    void funcX(Position p);
 }
