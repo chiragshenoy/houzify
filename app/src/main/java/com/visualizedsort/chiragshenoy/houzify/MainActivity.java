@@ -1,5 +1,8 @@
 package com.visualizedsort.chiragshenoy.houzify;
 
+import android.graphics.Canvas;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,13 +26,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.SelectedValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.model.Viewport;
+import lecho.lib.hellocharts.renderer.ChartRenderer;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.Chart;
 import lecho.lib.hellocharts.view.ColumnChartView;
@@ -64,14 +72,15 @@ public class MainActivity extends FragmentActivity {
         private boolean hasLabels = false;
         private boolean hasLabelForSelected = false;
         private int dataType = DEFAULT_DATA;
-        int[] randomArray;
+        private int[] randomArray;
         private Button sort;
-        List<SubcolumnValue> values;
-        int[] sortedArray;
-        Button generate;
-        EditText numbers;
-        int numbersToBeGenerated = 0;
+        private List<SubcolumnValue> values;
+        private int[] sortedArray;
+        private Button generate;
+        private EditText numbers;
+        private int numbersToBeGenerated = 0;
 
+        Sorter h;
 
         public PlaceholderFragment() {
         }
@@ -108,81 +117,37 @@ public class MainActivity extends FragmentActivity {
             sort.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Sorter h = new HeapSorter(getContext(), randomArray);
-
-
-                    SortObserver s = new PlaceholderFragment();
-                    h.registerObserver(s);
-
+                    prepareDataAnimation();
+                    h = new HeapSorter(PlaceholderFragment.this, getContext(), randomArray);
                     sortedArray = h.getSortedArray();
-                    Position p = h.doSomethingWithSortPosition();
-
-                    int[] ans = p.getPos();
-                    Collections.swap(values, ans[0], ans[1]);
-                    List<Column> columns = new ArrayList<Column>();
-                    Column column = new Column(values);
-                    columns.add(column);
-                    data = new ColumnChartData(columns);
-                    chart.setColumnChartData(data);
-
-//                    //lol
-//                    int numSubcolumns = randomArray.length;
-//                    int numColumns = 1;
-//                    // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
-//                    List<Column> columns = new ArrayList<Column>();
-//                    for (int i = 0; i < numColumns; ++i) {
-//
-//                        values = new ArrayList<SubcolumnValue>();
-//                        for (int j = 0; j < numSubcolumns; ++j) {
-//                            values.add(new SubcolumnValue(sortedArray[j], ChartUtils.pickColor()));
-//                            Log.e("", "" + randomArray[j]);
-//                        }
-//
-//                        Column column = new Column(values);
-//                        column.setHasLabels(hasLabels);
-//                        column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-//                        columns.add(column);
-//                    }
-//
-//                    data = new ColumnChartData(columns);
-//
-//                    if (hasAxes) {
-//                        Axis axisX = new Axis();
-//                        Axis axisY = new Axis().setHasLines(true);
-//                        if (hasAxesNames) {
-//                            axisX.setName("Axis X");
-//                            axisY.setName("Axis Y");
-//                        }
-//                        data.setAxisXBottom(axisX);
-//                        data.setAxisYLeft(axisY);
-//                    } else {
-//                        data.setAxisXBottom(null);
-//                        data.setAxisYLeft(null);
-//                    }
-//
-//                    //lol ends
-                    chart.setColumnChartData(data);
-
-                    chart.startDataAnimation();
-
                 }
             });
-
-
-//            swap();
 
 
             return rootView;
         }
 
-        private void swap() {
+        private void swap(int i, int j) {
 
-            Collections.swap(values, 10, 20);
+            Collections.swap(values, i, j);
             List<Column> columns = new ArrayList<Column>();
             Column column = new Column(values);
             columns.add(column);
             data = new ColumnChartData(columns);
+
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            if (hasAxesNames) {
+                axisX.setName("Axis X");
+                axisY.setName("Axis Y");
+            } else {
+                data.setAxisXBottom(null);
+                data.setAxisYLeft(null);
+            }
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
             chart.setColumnChartData(data);
+
         }
 
         // MENU
@@ -445,14 +410,10 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
-
         @Override
-        public void funcX(Position p) {
+        public void callback(final int i, final int j) {
 
-        }
-
-        @Override
-        public void update(Observable observable, Object data) {
+            swap(i, j);
 
         }
 

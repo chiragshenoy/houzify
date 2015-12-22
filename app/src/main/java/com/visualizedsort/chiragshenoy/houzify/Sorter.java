@@ -7,7 +7,7 @@ public interface Sorter {
 
     int[] getSortedArray();
 
-    public void registerObserver(SortObserver observer);
-
-    public Position doSomethingWithSortPosition();
+//    public void registerObserver(SortObserver observer);
+//
+//    public Position doSomethingWithSortPosition();
 }

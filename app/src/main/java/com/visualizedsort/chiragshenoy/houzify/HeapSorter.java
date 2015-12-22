@@ -1,8 +1,13 @@
 package com.visualizedsort.chiragshenoy.houzify;
 
 import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Chirag Shenoy on 21-Dec-15.
@@ -12,31 +17,39 @@ public class HeapSorter implements Sorter {
     NumberList n;
     private static int N;
     public Context context;
-    int[] arr;
+    private int[] arr;
+    int[] temp;
 
-    private ArrayList<SortObserver> observers = new ArrayList<SortObserver>();
-    private Position ballPosition = new Position();
+    SortObserver sortObserver;
 
-    public void registerObserver(SortObserver observer) {
-        observers.add(observer);
-    }
-
-    public void notifyListeners() {
-        for (SortObserver observer : observers) {
-            observer.funcX(ballPosition);
-        }
-    }
-
-    public Position doSomethingWithSortPosition() {
-        //bounce etc
-        notifyListeners();
-        return ballPosition;
-    }
+    // constructor
 
 
-    public HeapSorter(Context context, int[] arr) {
+//
+//    private ArrayList<SortObserver> observers = new ArrayList<SortObserver>();
+//    private Position ballPosition = new Position();
+//
+//    public void registerObserver(SortObserver observer) {
+//        observers.add(observer);
+//    }
+//
+//    public void notifyListeners() {
+//        for (SortObserver observer : observers) {
+//            observer.funcX(ballPosition);
+//        }
+//    }
+//
+//    public Position doSomethingWithSortPosition() {
+//        //bounce etc
+//        notifyListeners();
+//        return ballPosition;
+//    }
+
+
+    public HeapSorter(SortObserver s, Context context, int[] arr) {
         this.context = context;
         this.arr = arr;
+        this.sortObserver = s;
     }
 
     public void sort() {
@@ -71,12 +84,21 @@ public class HeapSorter implements Sorter {
     }
 
     /* Function to swap two numbers in an array */
-    public void swap(int arr[], int i, int j) {
+    public void swap(int arr[], final int i, final int j) {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
-        int[] temp = {i, j};
-        ballPosition.setPos(temp);
+//        Log.e("Swap being called", "" + i + " and " + j);
+//        SystemClock.sleep(1000);
+//        new Timer().schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                // this code will be executed after 2 seconds
+//                sortObserver.callback(i, j);
+//
+//            }
+//        }, 2000);
+        sortObserver.callback(i, j);
     }
 
     public int[] getSortedArray() {
@@ -84,5 +106,8 @@ public class HeapSorter implements Sorter {
         return arr;
     }
 
+    public int[] getTemp() {
+        return temp;
+    }
 
 }
