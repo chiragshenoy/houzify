@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
@@ -79,6 +82,9 @@ public class MainActivity extends FragmentActivity {
         private Button generate;
         private EditText numbers;
         private int numbersToBeGenerated = 0;
+        Timer noMovementTimer;
+        private static final ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
 
         Sorter h;
 
@@ -413,8 +419,15 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void callback(final int i, final int j) {
 
-            swap(i, j);
+            Runnable task = new Runnable() {
+                public void run() {
+                    swap(i, j);
 
+                }
+            };
+            worker.schedule(task, 0, TimeUnit.SECONDS);
+
+            //swap(i, j);
         }
 
 

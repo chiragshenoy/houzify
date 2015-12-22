@@ -1,6 +1,7 @@
 package com.visualizedsort.chiragshenoy.houzify;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by Chirag Shenoy on 21-Dec-15.
@@ -18,33 +21,11 @@ public class HeapSorter implements Sorter {
     private static int N;
     public Context context;
     private int[] arr;
-    int[] temp;
-
+    Timer noMovementTimer;
     SortObserver sortObserver;
-
-    // constructor
-
-
-//
-//    private ArrayList<SortObserver> observers = new ArrayList<SortObserver>();
-//    private Position ballPosition = new Position();
-//
-//    public void registerObserver(SortObserver observer) {
-//        observers.add(observer);
-//    }
-//
-//    public void notifyListeners() {
-//        for (SortObserver observer : observers) {
-//            observer.funcX(ballPosition);
-//        }
-//    }
-//
-//    public Position doSomethingWithSortPosition() {
-//        //bounce etc
-//        notifyListeners();
-//        return ballPosition;
-//    }
-
+    int i, j;
+    private static final ScheduledExecutorService worker =
+            Executors.newSingleThreadScheduledExecutor();
 
     public HeapSorter(SortObserver s, Context context, int[] arr) {
         this.context = context;
@@ -54,11 +35,33 @@ public class HeapSorter implements Sorter {
 
     public void sort() {
         heapify(arr);
-        for (int i = N; i > 0; i--) {
-            swap(arr, 0, i);
-            N = N - 1;
-            maxheap(arr, 0);
-        }
+
+        i = N;
+        noMovementTimer = new Timer();
+        noMovementTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                sortObserver.callback(0, i);
+                swap(arr, 0, i);
+                N = N - 1;
+                maxheap(arr, 0);
+                i--;
+
+                if (i == 0)
+                    noMovementTimer.cancel();
+
+            }
+        }, 0, 1000);//put here time 1000 milliseconds=1 second
+
+
+//        for (int i = N; i > 0; i--) {
+//            sortObserver.callback(0, i);
+//            swap(arr, 0, i);
+//            N = N - 1;
+//            maxheap(arr, 0);
+//        }
+
+
     }
 
     public void heapify(int arr[]) {
@@ -78,18 +81,30 @@ public class HeapSorter implements Sorter {
             max = right;
 
         if (max != i) {
+            sortObserver.callback(i, max);
             this.swap(arr, i, max);
             maxheap(arr, max);
         }
     }
 
     /* Function to swap two numbers in an array */
-    public void swap(int arr[], final int i, final int j) {
+    public void swap(int arr[], int i, int j) {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //Do something after 100ms
+//
+//                sortObserver.callback(i, j);
+//
+//            }
+//        }, 1000);
+
+
 //        Log.e("Swap being called", "" + i + " and " + j);
-//        SystemClock.sleep(1000);
 //        new Timer().schedule(new TimerTask() {
 //            @Override
 //            public void run() {
@@ -98,16 +113,11 @@ public class HeapSorter implements Sorter {
 //
 //            }
 //        }, 2000);
-        sortObserver.callback(i, j);
     }
 
     public int[] getSortedArray() {
         sort();
         return arr;
-    }
-
-    public int[] getTemp() {
-        return temp;
     }
 
 }

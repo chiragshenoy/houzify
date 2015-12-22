@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,27 +8,58 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.visualizedsort.chiragshenoy.houzify.MainActivity$PlaceholderFragment">
 
-    <Button
-        android:id="@+id/sort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right" />
-
-    <Button
-        android:id="@+id/generate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
-
 
     <lecho.lib.hellocharts.view.ColumnChartView
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></lecho.lib.hellocharts.view.ColumnChartView>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"></lecho.lib.hellocharts.view.ColumnChartView>
 
-    <EditText
-        android:id="@+id/numbers"
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="I want to sort " />
+
+        <EditText
+            android:id="@+id/numbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv"
+            android:inputType="number" />
+
+
+        <TextView
+            android:id="@+id/tvNumbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/numbers"
+            android:text="numbers" />
+
+        <Button
+            android:id="@+id/generate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/tvNumbers"
+            android:text="Generate them!" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number" />
-</FrameLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="SORT NOW" />
+
+</RelativeLayout>
