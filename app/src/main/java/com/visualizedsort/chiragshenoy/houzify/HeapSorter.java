@@ -1,31 +1,22 @@
 package com.visualizedsort.chiragshenoy.houzify;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by Chirag Shenoy on 21-Dec-15.
  */
 public class HeapSorter implements Sorter {
 
-    NumberList n;
+    private int TIME_INTERVAL = 1000;
     private static int N;
     public Context context;
     private int[] arr;
-    Timer noMovementTimer;
-    SortObserver sortObserver;
-    int i, j;
-    private static final ScheduledExecutorService worker =
-            Executors.newSingleThreadScheduledExecutor();
+    private Timer noMovementTimer;
+    private SortObserver sortObserver;
+    private int i;
 
     public HeapSorter(SortObserver s, Context context, int[] arr) {
         this.context = context;
@@ -51,17 +42,7 @@ public class HeapSorter implements Sorter {
                     noMovementTimer.cancel();
 
             }
-        }, 0, 1000);//put here time 1000 milliseconds=1 second
-
-
-//        for (int i = N; i > 0; i--) {
-//            sortObserver.callback(0, i);
-//            swap(arr, 0, i);
-//            N = N - 1;
-//            maxheap(arr, 0);
-//        }
-
-
+        }, 0, TIME_INTERVAL);
     }
 
     public void heapify(int arr[]) {
@@ -92,27 +73,6 @@ public class HeapSorter implements Sorter {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //Do something after 100ms
-//
-//                sortObserver.callback(i, j);
-//
-//            }
-//        }, 1000);
-
-
-//        Log.e("Swap being called", "" + i + " and " + j);
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                // this code will be executed after 2 seconds
-//                sortObserver.callback(i, j);
-//
-//            }
-//        }, 2000);
     }
 
     public int[] getSortedArray() {

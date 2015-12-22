@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Houzify</string>
+    <string name="generate">by <B><u>"Generating them!"</u></B></string>
+    <string name="requestString">"I'd like to sort "</string>
+    <string name="oneElement">"One element is already sorted :)"</string>
+    <string name="request">"Please Enter a valid number"</string>
+    <string name="sort"><i><u>SORT</u></i></string>
 </resources>

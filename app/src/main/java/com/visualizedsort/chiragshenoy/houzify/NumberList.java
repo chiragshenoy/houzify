@@ -2,8 +2,6 @@ package com.visualizedsort.chiragshenoy.houzify;
 
 /**
  * Created by Chirag Shenoy on 21-Dec-15.
- * <p/>
- * Created by Chirag Shenoy on 21-Dec-15.
  */
 
 /**
@@ -22,12 +20,6 @@ public class NumberList {
         anArray = new int[size];
         for (int i = 0; i < anArray.length; i++) {
             anArray[i] = randomFill();
-        }
-    }
-
-    public static void print() {
-        for (int n : anArray) {
-            System.out.println(n + " ");
         }
     }
 

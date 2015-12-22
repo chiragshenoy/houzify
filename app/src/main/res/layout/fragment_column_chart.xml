@@ -23,10 +23,13 @@
 
         <TextView
             android:id="@+id/tv"
+            android:textStyle="normal|bold|italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="I want to sort " />
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/requestString"
+            android:textSize="16dp" />
 
         <EditText
             android:id="@+id/numbers"
@@ -41,25 +44,53 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textStyle="normal|bold|italic"
             android:layout_toRightOf="@+id/numbers"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="16dp"
             android:text="numbers" />
 
-        <Button
+
+        <TextView
+            android:textStyle="normal|bold|italic"
             android:id="@+id/generate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textSize="16dp"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/tvNumbers"
-            android:text="Generate them!" />
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/generate" />
+
+        <TextView
+            android:id="@+id/sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentRight="true"
+            android:textColor="#ff0000"
+            android:layout_toRightOf="@id/generate"
+            android:textSize="20dp"
+            android:textStyle="normal|bold|italic"
+            android:text="@string/sort" />
+        <!--<Button-->
+        <!--android:id="@+id/generate"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_toRightOf="@id/tvNumbers"-->
+        <!--android:text="@string/generate" />-->
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/sort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="SORT NOW" />
+    <!--<Button-->
+    <!--android:id="@+id/sort"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:text="SORT NOW" />-->
 
 </RelativeLayout>
